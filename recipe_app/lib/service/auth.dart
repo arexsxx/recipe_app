@@ -44,7 +44,7 @@ Future<void> register(
 Future<void> login(String email, String password) async {
   final url = Uri.parse("http://192.168.43.212:8000/api/auth/login");
 
-  // Cek apakah email valid
+  // Cek email valid
   if (!_isValidEmail(email)) {
     throw Exception("Format email tidak valid.");
   }
@@ -63,6 +63,7 @@ Future<void> login(String email, String password) async {
       final data = json.decode(response.body);
       final accessToken = data['token']['access_token'];
 
+      // Simpan data ke secure storage
       await secureStorage.write(key: 'access_token', value: accessToken);
       print('Access token berhasil disimpan!');
     } else {
@@ -73,6 +74,37 @@ Future<void> login(String email, String password) async {
     throw Exception("Login gagal: $e");
   }
 }
+
+// Fungsi untuk mendapatkan data profil pengguna yang login
+Future<Map<String, dynamic>?> fetchUserProfile() async {
+  final url = Uri.parse("http://192.168.43.212:8000/api/user/me");
+  final accessToken = await secureStorage.read(key: 'access_token');
+
+  if (accessToken == null) {
+    throw Exception("Tidak ada token akses, silakan login terlebih dahulu.");
+  }
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken", // Menggunakan token akses
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data; // Mengembalikan data profil pengguna
+    } else {
+      final error = json.decode(response.body);
+      throw Exception("Gagal mengambil data profil: ${error['message'] ?? 'Kesalahan server'}");
+    }
+  } catch (e) {
+    throw Exception("Gagal mengambil data profil: $e");
+  }
+}
+
 
 // Fungsi untuk cek apakah email valid
 bool _isValidEmail(String email) {

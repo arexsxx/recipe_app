@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:responsi_uts/screens/edit_profil.dart';
 import 'package:responsi_uts/screens/home_page.dart';
 import 'package:responsi_uts/screens/splash_screen.dart';
 import 'package:responsi_uts/widgets/bottom_navigation.dart';
+
+final secureStorage = FlutterSecureStorage();
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,6 +18,49 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int _selectedIndex = 2;
+  String _name = '';
+  String _email = '';
+
+  // Fungsi untuk mengambil data profil pengguna
+  Future<void> fetchUserProfile() async {
+    final accessToken = await secureStorage.read(key: 'access_token');
+
+    if (accessToken == null) {
+      throw Exception("Tidak ada token akses, silakan login terlebih dahulu.");
+    }
+
+    final url = Uri.parse("http://192.168.43.212:8000/api/user/me");
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $accessToken", 
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _name = data['name'] ?? 'Nama tidak tersedia';
+          _email = data['email'] ?? 'Email tidak tersedia';
+        });
+      } else {
+        final error = json.decode(response.body);
+        throw Exception(
+            "Gagal mengambil data profil: ${error['message'] ?? 'Kesalahan server'}");
+      }
+    } catch (e) {
+      throw Exception("Gagal mengambil data profil: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfile(); // Memanggil fungsi untuk mengambil profil saat halaman dimuat
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -73,18 +121,18 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [
-          const Center(
+          Center(
             child: CircleAvatar(
               radius: 70,
-              backgroundImage: AssetImage("assets/images/starbucks.jpeg"),
+              backgroundImage: AssetImage("assets/images/spalsh.png"),
             ),
           ),
           const SizedBox(height: 16),
-          const Center(
+          Center(
             child: Column(
               children: [
                 Text(
-                  "Ervin khoirus s",
+                  _name.isNotEmpty ? _name : 'Nama tidak tersedia',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -92,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "ervinkhoirus@gmail.com",
+                  _email.isNotEmpty ? _email : 'Email tidak tersedia',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -102,6 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 16),
+          // mengedit akun
           ListTile(
             leading: const Icon(Icons.person_rounded, color: Color(0xff1D3D1D)),
             title: const Text(
