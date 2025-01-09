@@ -27,7 +27,7 @@ class ButtomNavigationWidget extends StatelessWidget {
       ),
       // margin: const EdgeInsets.all(16),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         child: BottomNavigationBar(
           backgroundColor: Color(0xff1D3D1D),
           items: const <BottomNavigationBarItem>[

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:responsi_uts/screens/edit_profil.dart';
+import 'package:responsi_uts/screens/favorite_page.dart';
 import 'package:responsi_uts/screens/home_page.dart';
-import 'package:responsi_uts/screens/splash_screen.dart';
+import 'package:responsi_uts/screens/login_page.dart';
 import 'package:responsi_uts/widgets/bottom_navigation.dart';
+import 'package:responsi_uts/widgets/card_data.dart';
 
 final secureStorage = FlutterSecureStorage();
 
@@ -36,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
         url,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $accessToken", 
+          "Authorization": "Bearer $accessToken",
         },
       );
 
@@ -75,7 +77,8 @@ class _ProfilePageState extends State<ProfilePage> {
     } else if (index == 1) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(
+            builder: (context) => FavoritesPage(cardData: cardData)),
         (route) => false,
       );
     }
@@ -204,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SplashScreen()),
+                MaterialPageRoute(builder: (context) => const loginPage()),
               );
             },
           ),

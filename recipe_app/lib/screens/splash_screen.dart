@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: AnimatedOpacity(
           opacity: _opacity,
           duration: Duration(seconds: 2),
-          child: Image.asset("recipe_app/assets/images/splash.png"),
+          child: Image.asset("assets/images/peh.png"),
         ),
       ),
     );

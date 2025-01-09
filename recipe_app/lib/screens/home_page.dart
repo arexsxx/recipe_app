@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsi_uts/screens/favorite_page.dart';
 import 'package:responsi_uts/screens/profile_page.dart';
 import 'package:responsi_uts/widgets/bottom_navigation.dart';
 import 'package:responsi_uts/widgets/card_data.dart';
@@ -21,7 +22,8 @@ class _HomePageState extends State<HomePage> {
     if (index == 1) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(
+            builder: (context) => FavoritesPage(cardData: cardData)),
       );
     } else if (index == 2) {
       Navigator.pushAndRemoveUntil(
@@ -144,12 +146,34 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                data.title,
-                                style: const TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    data.title,
+                                    style: const TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        data.isLoved = !data.isLoved;
+                                      });
+                                    },
+                                    child: Icon(
+                                      data.isLoved
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_outline_rounded,
+                                      color: data.isLoved
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(height: 4),
                               Text(
@@ -178,8 +202,8 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                     data.harga,
                                     style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
@@ -257,11 +281,22 @@ class _HomePageState extends State<HomePage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const Icon(
-                                    Icons.favorite_outline_rounded,
-                                    color: Colors.grey,
-                                    size: 20,
-                                  )
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        data.isLoved = !data.isLoved;
+                                      });
+                                    },
+                                    child: Icon(
+                                      data.isLoved
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_outline_rounded,
+                                      color: data.isLoved
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      size: 20,
+                                    ),
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 4),
@@ -291,8 +326,8 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                     data.harga,
                                     style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],

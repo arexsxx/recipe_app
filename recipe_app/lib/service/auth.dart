@@ -98,13 +98,13 @@ Future<Map<String, dynamic>?> fetchUserProfile() async {
       return data; // Mengembalikan data profil pengguna
     } else {
       final error = json.decode(response.body);
-      throw Exception("Gagal mengambil data profil: ${error['message'] ?? 'Kesalahan server'}");
+      throw Exception(
+          "Gagal mengambil data profil: ${error['message'] ?? 'Kesalahan server'}");
     }
   } catch (e) {
     throw Exception("Gagal mengambil data profil: $e");
   }
 }
-
 
 // Fungsi untuk cek apakah email valid
 bool _isValidEmail(String email) {
